@@ -1,0 +1,44 @@
+{
+  "Name": "",
+  "Description": "",
+  "Examples": [
+    "",
+    ""
+  ],
+  "Commands": [
+    {
+      "Type": "Class",
+      "FullName": "TST.TIE.Tools.TieCLI.SyncCommand",
+      "Name": "sync",
+      "ShortName": "s",
+      "Description": "Programmi per la gestione dei dati come export, import e trasferimento",
+      "Commands": [
+        {
+          "Type": "Property",
+          "FullName": "TST.TIE.Tools.TieCLI.SyncCommand.LiteMode",
+          "Name": "-lite",
+          "ShortName": "-l",
+          "Description": "Importazione di tipo light evita la ricostruzione delle tabelle",
+        },
+        {
+          "Type": "Method",
+          "FullName": "TST.TIE.Tools.TieCLI.SyncCommand.Export",
+          "Name": "export",
+          "ShortName": "x",
+          "Description": "Esporta i dati dal database a file csv",
+          "Arguments": [
+            {
+              "Type": "Argument",
+              "FullName": "onlyUsr",
+              "Name": "onlyusr",
+              "DataType": "bool",
+              "DefaultValue": "false",
+              "Description": "Esporta solamente le tabelle USR"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+
+}
