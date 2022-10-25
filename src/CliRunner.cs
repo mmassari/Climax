@@ -34,6 +34,7 @@ namespace Climax
 					Assembly.GetEntryAssembly().Location);
 			Arguments = args;
 			OnErrorBehavior = OnErrorBehavior.DisplayHelp;
+			Examples = new List<string>();
 		} 
 		#endregion
 
