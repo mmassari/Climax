@@ -20,7 +20,7 @@ namespace Climax.UnitTest
 			//Arrange
 			string[] args = new string[] { "system", "clock", "add", "hour", "-5" };
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			//Act
 			cli.Execute();
@@ -45,7 +45,7 @@ namespace Climax.UnitTest
 		{
 			string[] args = new string[] { "system", "clock" };
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			cli.Execute();
 			ExecutionStack.GetExecutedMethod()
@@ -60,9 +60,9 @@ namespace Climax.UnitTest
 		public void Execute_Nested_Should_Call_All_Initializers()
 		{
 			string[] args = new string[] { "system", "clock", "local" };
-			var cli = new CliRunner(args)
+			var cli = new CliRunner(args)				
 				.WithInitialize(() => ExecutionStack.AddRootInitializer(MethodBase.GetCurrentMethod()))
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			cli.Execute();
 
@@ -82,7 +82,7 @@ namespace Climax.UnitTest
 				"-lite"
 			};
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			cli.Execute();
 
@@ -107,7 +107,7 @@ namespace Climax.UnitTest
 				"--help","--silent"
 			};
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			cli.Execute();
 
@@ -130,7 +130,7 @@ namespace Climax.UnitTest
 				"--verbose", "--my"
 			};
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			cli.Execute();
 
@@ -150,7 +150,7 @@ namespace Climax.UnitTest
 				"-lite"
 			};
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			//Act
 			cli.Execute();
@@ -181,7 +181,7 @@ namespace Climax.UnitTest
 		{
 			string[] args = new string[] { "system", "clock", "add", "hour" };
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 			cli.Invoking(y => y.Execute())
 				 .ShouldThrow<MissingParametersException>()
 				 .WithMessage($"The method has 2 mandatory parameters");
@@ -192,7 +192,7 @@ namespace Climax.UnitTest
 		{
 			string[] args = new string[] { "system", "clock", "add", "hour", "a" };
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			cli.Invoking(y => y.Execute())
 				 .ShouldThrow<InvalidParameterException>()
@@ -204,7 +204,7 @@ namespace Climax.UnitTest
 		{
 			string[] args = new string[] { "system", "clock", "remove", "hour", "a" };
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			cli.Invoking(y => y.Execute())
 				 .ShouldThrow<InvalidCommandException>()
@@ -216,7 +216,7 @@ namespace Climax.UnitTest
 		{
 			string[] args = new string[] { "maint" };
 			var cli = new CliRunner(args)
-				.ThrowOnError();
+				.OnError(OnErrorBehavior.ThrowError);
 
 			cli.Invoking(y => y.Execute())
 				 .ShouldThrow<DefaultMethodNotFoundException>()

@@ -11,15 +11,18 @@ namespace Climax
 {
 	public class CliRunner : CommandTypeBase
 	{
-		private IDictionary<string, string> OptionArguments { get; } = new Dictionary<string, string>();
-		private List<string> CommandArguments { get; } = new List<string>();
-		public Assembly ScanAssembly { get; private set; }
-		public string[] Arguments { get; }
-		public string Executable { get; private set; }
-		public List<string> Examples { get; private set; }
-		public bool PrintHelpOnError { get; private set; }
+		#region Properties
+		internal IDictionary<string, string> OptionArguments { get; } = new Dictionary<string, string>();
+		internal List<string> CommandArguments { get; } = new List<string>();
+		internal Assembly ScanAssembly { get; private set; }
+		internal string[] Arguments { get; }
+		internal string Executable { get; private set; }
+		internal List<string> Examples { get; private set; }
+		internal OnErrorBehavior OnErrorBehavior { get; private set; }
 		internal IEnumerable<CommandFlag> CommandFlags { get; private set; }
+		#endregion
 
+		#region Contructor
 		public CliRunner(params string[] args) : base(null)
 		{
 			if (args is null)
@@ -30,9 +33,11 @@ namespace Climax
 				Executable = Path.GetFileName(
 					Assembly.GetEntryAssembly().Location);
 			Arguments = args;
-			PrintHelpOnError = true;
-		}
+			OnErrorBehavior = OnErrorBehavior.DisplayHelp;
+		} 
+		#endregion
 
+		#region Configuration Methods
 		public CliRunner WithName(string programName)
 		{
 			Name = programName;
@@ -63,11 +68,13 @@ namespace Climax
 			Initializer = initializeMethod;
 			return this;
 		}
-		public CliRunner ThrowOnError()
+		public CliRunner OnError(OnErrorBehavior behavior)
 		{
-			PrintHelpOnError = false;
+			OnErrorBehavior = behavior;
 			return this;
 		}
+
+		#endregion
 
 		public void Execute()
 		{
@@ -82,7 +89,7 @@ namespace Climax
 
 			try
 			{
-				var m = GetExecutingMethod(this, 0);
+				var m = GetExecutingMethod(this);
 				ICommandType type = m.Method.Parent;
 				while (type != null)
 				{
@@ -93,14 +100,16 @@ namespace Climax
 			}
 			catch (Exception ex)
 			{
-				if (PrintHelpOnError)
-				{
-					TextWriter errorWriter = Console.Error;
-					errorWriter.WriteLine($"Error - {ex.Message}\n");
+				if (OnErrorBehavior == OnErrorBehavior.ThrowError)
+					throw;
+				
+				TextWriter errorWriter = Console.Error;
+				errorWriter.WriteLine($"Error - {ex.Message}\n");
+				
+				if(OnErrorBehavior == OnErrorBehavior.DisplayHelp)
 					errorWriter.WriteLine(GetHelp());
-					return;
-				}
-				throw;
+
+				return;
 
 			}
 		}
@@ -158,7 +167,7 @@ namespace Climax
 		/// <returns></returns>
 		/// <exception cref="InvalidCommandException"></exception>
 		/// <exception cref="DefaultMethodNotFoundException"></exception>
-		private CmdArgs GetExecutingMethod(ICommandType type, int index)
+		private CmdArgs GetExecutingMethod(ICommandType type, int index=0)
 		{
 			var arg = CommandArguments[index].Trim().ToLower();
 			var cmd = type.Commands.FirstOrDefault(c => c.Name == arg);

@@ -47,6 +47,7 @@
     <Compile Include="Attributes\FlagAttribute.cs" />
     <Compile Include="Concrete\CommandFlag.cs" />
     <Compile Include="Flags.cs" />
+    <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Interfaces\ICommandMethod.cs" />
     <Compile Include="Attributes\DefaultCommandAttribute.cs" />
     <Compile Include="Exceptions\InvalidParameterException.cs" />
